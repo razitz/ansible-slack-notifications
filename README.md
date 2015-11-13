@@ -1,7 +1,7 @@
 # ansible-slack-notifications
 
 
-![Slack Screen Capture](screen_capture.gif)
+![Slack Screen Capture](screen_capture.png)
 
 ## Example config
 ```
