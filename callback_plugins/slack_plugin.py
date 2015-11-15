@@ -150,12 +150,12 @@ class CallbackModule(object):
 
         summary_all_host_output = []
         for host in hosts:
-            if isinstance(stats, AggregateStats):
-                stats = stats.summarize(host)
+            host_stats = stats.summarize(host)
+
             summary_output = "{prefix}_{host}_ - ".format(prefix=self.msg_prefix, host=host)
             for summary_item in ['ok', 'changed', 'unreachable', 'failures']:
-                if stats[summary_item] != 0:
-                    summary_output += "[*{}* - {}] ".format(summary_item, stats[summary_item])
+                if host_stats[summary_item] != 0:
+                    summary_output += "[*{}* - {}] ".format(summary_item, host_stats[summary_item])
             summary_all_host_output.append(summary_output)
         self._send_slack("\n".join(summary_all_host_output))
         msg = "{prefix}Finished Ansible run for *_{play}_* in {min:02} minutes, {sec:02} seconds".format(
