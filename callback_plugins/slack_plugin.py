@@ -1,7 +1,7 @@
 import os
 import time
+
 from ansible import utils
-from ansible.callbacks import AggregateStats
 from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 
@@ -17,13 +17,6 @@ class CallbackModule(object):
 
     def __init__(self):
         self.start_time = time.time()
-        self.task_report = []
-        self.last_task = None
-        self.last_task_changed = False
-        self.last_task_count = 0
-        self.last_task_delta = 0
-        self.last_task_start = time.time()
-        self.condensed_task_report = False
         self.msg_prefix = ''
         self.playbook_name = None
         self.notify_slack = False
@@ -55,7 +48,7 @@ class CallbackModule(object):
 
     def _send_slack(self, text):
         payload = self.build_payload_for_slack(text)
-        slack_incoming_webhook = SLACK_INCOMING_WEBHOOK % (TOKEN)
+        slack_incoming_webhook = SLACK_INCOMING_WEBHOOK % TOKEN
 
         open_url(slack_incoming_webhook, data=payload)
 
@@ -65,7 +58,7 @@ class CallbackModule(object):
     def runner_on_failed(self, host, res, ignore_errors=False):
         if 'msg' in res:
             self._send_slack('{prefix}The ansible run returned the following error:\n\n {error}'.format(
-                prefix=self.msg_prefix, error=msg['msg']))
+                prefix=self.msg_prefix, error=res['msg']))
 
     def runner_on_ok(self, host, res):
         pass
